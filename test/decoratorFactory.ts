@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { stat } from 'fs';
 
 const get = (url: string) => {
   return (target: any, key: any, description: PropertyDescriptor) => {
