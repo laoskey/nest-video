@@ -6,10 +6,6 @@ import {
   Patch,
   Param,
   Delete,
-  Request,
-  Query,
-  Header,
-  HttpCode,
   HttpStatus,
   Req,
   Res,
@@ -19,7 +15,7 @@ import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import Response from 'express';
+import { Response } from 'express';
 
 interface CaptchaBody {
   code: string;
@@ -64,7 +60,11 @@ export class UserController {
   @ApiOperation({
     summary: 'Get captcha code',
   })
-  createCode(@Req() req, @Res() res, @Session() session) {
+  createCode(
+    @Req() req,
+    @Res() res: Response,
+    @Session() session: SessionCaptcha,
+  ) {
     const captcha = this.userService.captchaCode();
     session.code = captcha.text;
     res.type('image/svg+xml');

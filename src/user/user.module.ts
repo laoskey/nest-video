@@ -1,8 +1,14 @@
-import { Module } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserController } from './user.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from './schema/user.schema';
+import { logger } from 'src/middlleware';
 
 @Module({
   imports: [
@@ -11,4 +17,12 @@ import { User, UserSchema } from './schema/user.schema';
   controllers: [UserController],
   providers: [UserService],
 })
-export class UserModule {}
+export class UserModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    // consumer
+    //   .apply(logger)
+    //   .forRoutes({ path: 'user', method: RequestMethod.GET });
+    // consumer.apply(logger).forRoutes("user");
+    consumer.apply(logger).forRoutes(UserController);
+  }
+}
