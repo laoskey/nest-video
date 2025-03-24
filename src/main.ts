@@ -3,15 +3,17 @@ import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { VersioningType } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
+import { NestExpressApplication } from '@nestjs/platform-express';
 import * as session from 'express-session';
 import * as cors from 'cors';
+import { join } from 'path';
 
-const writeList = ['/user/test'];
+const writeList = ['/user/test', '/upload/img', '/imgs/1742786807038.jpg'];
 function middlewareAll(req: Request, res: Response, next: NextFunction) {
   console.log(req.originalUrl);
 
   if (writeList.includes(req.originalUrl)) {
-    console.log('我来了');
+    // console.log('我来了');
 
     next();
   } else {
@@ -23,12 +25,13 @@ function middlewareAll(req: Request, res: Response, next: NextFunction) {
 }
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
   app.enableVersioning({
     type: VersioningType.URI,
     defaultVersion: '1',
   });
 
+  app.useStaticAssets(join(__dirname, 'public', 'imgs'), { prefix: '/imgs' });
   app.use(cors());
   app.use(
     session({
@@ -52,6 +55,7 @@ async function bootstrap() {
 
   await app.listen(process.env.PORT ?? 3000, () => {
     console.log('http://127.0.0.1:3000');
+    console.log(join(__dirname, 'public', 'imgs'));
   });
 }
 bootstrap().catch((error) => {
