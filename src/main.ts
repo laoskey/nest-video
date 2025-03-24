@@ -8,6 +8,7 @@ import * as session from 'express-session';
 import * as cors from 'cors';
 import { join } from 'path';
 import { Response as CustomerResponse } from './common/rsponse';
+import { HttpFilter } from './common/filter';
 
 const writeList = [
   '/user/test',
@@ -50,8 +51,12 @@ async function bootstrap() {
     }),
   );
 
-  app.use(middlewareAll);
+  // app.use(middlewareAll);
+
+  // 返回拦截器
   app.useGlobalInterceptors(new CustomerResponse());
+  // 错误过滤器
+  app.useGlobalFilters(new HttpFilter());
 
   const config = new DocumentBuilder()
     .setTitle('Nest-Video')
