@@ -7,9 +7,11 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import * as session from 'express-session';
 import * as cors from 'cors';
 import { join } from 'path';
+import { Response as CustomerResponse } from './common/rsponse';
 
 const writeList = [
   '/user/test',
+  '/v1/user',
   '/v1/upload/img',
   '/v1/upload/export',
   '/v1/upload/stream',
@@ -49,6 +51,7 @@ async function bootstrap() {
   );
 
   app.use(middlewareAll);
+  app.useGlobalInterceptors(new CustomerResponse());
 
   const config = new DocumentBuilder()
     .setTitle('Nest-Video')
