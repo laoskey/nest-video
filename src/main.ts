@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { VersioningType } from '@nestjs/common';
+import { VersioningType, ValidationPipe } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import * as session from 'express-session';
@@ -13,6 +13,7 @@ import { HttpFilter } from './common/filter';
 const writeList = [
   '/user/test',
   '/v1/user',
+  '/v1/login',
   '/v1/upload/img',
   '/v1/upload/export',
   '/v1/upload/stream',
@@ -57,6 +58,8 @@ async function bootstrap() {
   app.useGlobalInterceptors(new CustomerResponse());
   // 错误过滤器
   app.useGlobalFilters(new HttpFilter());
+  // 全局验证
+  app.useGlobalPipes(new ValidationPipe());
 
   const config = new DocumentBuilder()
     .setTitle('Nest-Video')
@@ -69,7 +72,7 @@ async function bootstrap() {
 
   await app.listen(process.env.PORT ?? 3000, () => {
     console.log('http://127.0.0.1:3000');
-    console.log(join(__dirname, 'public', 'imgs'));
+    // console.log(join(__dirname, 'public', 'imgs'));
   });
 }
 bootstrap().catch((error) => {
