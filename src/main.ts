@@ -8,7 +8,13 @@ import * as session from 'express-session';
 import * as cors from 'cors';
 import { join } from 'path';
 
-const writeList = ['/user/test', '/upload/img', '/imgs/1742786807038.jpg'];
+const writeList = [
+  '/user/test',
+  '/v1/upload/img',
+  '/v1/upload/export',
+  '/v1/upload/stream',
+  '/imgs/1742786807038.jpg',
+];
 function middlewareAll(req: Request, res: Response, next: NextFunction) {
   console.log(req.originalUrl);
 

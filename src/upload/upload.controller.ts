@@ -2,16 +2,15 @@ import {
   Controller,
   Get,
   Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
   UseInterceptors,
   UploadedFile,
+  Response,
 } from '@nestjs/common';
 import { UploadService } from './upload.service';
-import { UpdateUploadDto } from './dto/update-upload.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { Response as ExpressResponse } from 'express';
+import { join } from 'path';
+import { zip } from 'compressing';
 
 @Controller('upload')
 export class UploadController {
@@ -24,23 +23,21 @@ export class UploadController {
     return 'You are so sexy';
   }
 
-  @Get()
-  findAll() {
-    return this.uploadService.findAll();
+  @Get('export')
+  download(@Response() res: ExpressResponse) {
+    const url = join(__dirname, '../public/imgs/1742788559372.webp');
+    return res.sendFile(url);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.uploadService.findOne(+id);
-  }
+  @Get('stream')
+  down(@Response() res: ExpressResponse) {
+    const url = join(__dirname, '../public/imgs/1742788559372.webp');
+    const tarStream = new zip.Stream();
+    tarStream.addEntry(url);
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUploadDto: UpdateUploadDto) {
-    return this.uploadService.update(+id, updateUploadDto);
-  }
+    res.setHeader('Content-Type', 'application/octet-stream');
+    res.setHeader('Content-Disposition', 'attachment; filename=Eric.zip');
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.uploadService.remove(+id);
+    return tarStream.pipe(res);
   }
 }
