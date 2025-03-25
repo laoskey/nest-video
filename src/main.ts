@@ -14,6 +14,7 @@ import { RoleGuard } from './guard/role/role.guard';
 const writeList = [
   '/user/test',
   '/v1/user',
+  '/docs',
   '/v1/guard',
   '/v1/login',
   '/v1/upload/img',

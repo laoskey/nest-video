@@ -13,8 +13,12 @@ import { GuardService } from './guard.service';
 import { CreateGuardDto } from './dto/create-guard.dto';
 import { UpdateGuardDto } from './dto/update-guard.dto';
 import { RoleGuard } from './role/role.guard';
+import { ReqUrl, Role } from 'src/role/role.decorator';
+import { url } from 'inspector';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('guard')
+@ApiTags('守卫接口')
 @UseGuards(RoleGuard)
 export class GuardController {
   constructor(private readonly guardService: GuardService) {}
@@ -25,8 +29,10 @@ export class GuardController {
   }
 
   @Get()
-  @SetMetadata('roles', ['admin'])
-  findAll() {
+  @Role('admin')
+  // @SetMetadata('roles', ['admin'])
+  findAll(@ReqUrl() url: string) {
+    console.log('url', url);
     return this.guardService.findAll();
   }
 

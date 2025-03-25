@@ -3,6 +3,7 @@ import {
   Catch,
   ArgumentsHost,
   HttpException,
+  HttpStatus,
 } from '@nestjs/common';
 
 import { Request, Response } from 'express';
@@ -14,12 +15,23 @@ export class HttpFilter implements ExceptionFilter {
     const request = ctx.getRequest<Request>();
     const response = ctx.getResponse<Response>();
 
-    const status = exception.getStatus();
+    let status: number;
+    let message: string;
+
+    // 检查异常类型
+    if (exception instanceof HttpException) {
+      status = exception.getStatus();
+      message = exception.message;
+    } else {
+      // 如果不是 HttpException，使用默认的 500 状态码
+      status = HttpStatus.INTERNAL_SERVER_ERROR;
+      message = 'Internal Server Error';
+    }
 
     return response.status(status).json({
       status,
-      scccess: false,
-      data: exception.message,
+      sccess: false,
+      data: message,
       path: request.url,
       timestamp: new Date().toISOString(),
     });
