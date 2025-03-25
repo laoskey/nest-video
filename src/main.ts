@@ -9,10 +9,12 @@ import * as cors from 'cors';
 import { join } from 'path';
 import { Response as CustomerResponse } from './common/rsponse';
 import { HttpFilter } from './common/filter';
+import { RoleGuard } from './guard/role/role.guard';
 
 const writeList = [
   '/user/test',
   '/v1/user',
+  '/v1/guard',
   '/v1/login',
   '/v1/upload/img',
   '/v1/upload/export',
@@ -60,6 +62,8 @@ async function bootstrap() {
   app.useGlobalFilters(new HttpFilter());
   // 全局验证
   app.useGlobalPipes(new ValidationPipe());
+  // 全局守卫
+  // app.useGlobalGuards(new RoleGuard());
 
   const config = new DocumentBuilder()
     .setTitle('Nest-Video')
